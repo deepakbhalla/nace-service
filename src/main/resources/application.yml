@@ -1,0 +1,14 @@
+# server port
+server:
+   port: 8080
+
+spring:
+  # datasource details
+  datasource:    url: jdbc:h2:mem:nacedb
+    username: admin
+    password: admin    driver-class-name: org.h2.Driver
+  # jpa details 
+  jpa:    hibernate:      ddl-auto: update
+    generate-ddl: true
+  # in memory H2 database details
+  h2:    console:      enabled: true
