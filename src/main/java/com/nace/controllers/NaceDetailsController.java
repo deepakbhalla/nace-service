@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nace.builder.ApiResponseBuilder;
 import com.nace.constants.NaceDetailsConstants;
-import com.nace.dto.AddNaceDetails;
-import com.nace.dto.GetNaceDetails;
+import com.nace.dto.AddedNaceDetailsDto;
+import com.nace.dto.GetNaceDetailsDto;
 import com.nace.entities.NaceDetailsEntity;
 import com.nace.exceptions.EntityNotFoundException;
 import com.nace.filters.RequestCorrelation;
@@ -72,7 +72,7 @@ public class NaceDetailsController {
                     + "Value of request header named 'file-path' cannot be blank."),
             @ApiResponse(code = 500, message = "Something went wrong. Internal server error.") })
     @PostMapping
-    public ResponseEntity<AddNaceDetails> putNaceDetails(
+    public ResponseEntity<AddedNaceDetailsDto> putNaceDetails(
             @RequestHeader(name = NaceDetailsConstants.FILE_PATH) 
                 @NotEmpty(message = "Value of request header named 'file-path' cannot be empty.") 
                 @NotBlank(message = "Value of request header named 'file-path' cannot be blank.") 
@@ -83,7 +83,7 @@ public class NaceDetailsController {
         String corrId = RequestCorrelation.getId();
         LOG.info("[{}] NaceDetailsController | Import CSV | Start", corrId);
         List<NaceDetailsEntity> result = this.naceService.putNaceDetails(filePath.trim());
-        ResponseEntity<AddNaceDetails> response = this.apiResponseBuilder.buildPostResponse(result);
+        ResponseEntity<AddedNaceDetailsDto> response = this.apiResponseBuilder.buildPostResponse(result);
         LOG.info("[{}] NaceDetailsController | Import CSV | End", corrId);
         return response;
     }
@@ -103,7 +103,7 @@ public class NaceDetailsController {
                     + "Order value must be greater than zero."),
             @ApiResponse(code = 500, message = "Something went wrong. Internal server error.") })
     @GetMapping(NaceDetailsConstants.ENDPOINT_GET_NACE_DTLS)
-    public ResponseEntity<List<GetNaceDetails>> getNaceDetail (
+    public ResponseEntity<List<GetNaceDetailsDto>> getNaceDetail (
             @PathVariable(name = "order", required = true) 
                 @NotEmpty(message = "Order value must not be empty in the api request url.") 
                 @NotBlank(message = "Order value must not be blank in the api request url.") 

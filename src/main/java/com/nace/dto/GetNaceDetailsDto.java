@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class GetNaceDetails implements Serializable {
+public class GetNaceDetailsDto implements Serializable {
 
     private static final long serialVersionUID = 8479298145284697904L;
 

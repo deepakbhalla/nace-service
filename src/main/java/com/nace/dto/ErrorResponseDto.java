@@ -4,22 +4,22 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Represents persisted nace details.
+ * Represents api error response.
  * 
  * @author Deepak Bhalla
  *
  */
 @Data
-@Builder
-public class AddNaceDetails implements Serializable {
+@AllArgsConstructor
+public class ErrorResponseDto implements Serializable {
 
-    private static final long serialVersionUID = -8211588207894834628L;
+    private static final long serialVersionUID = -2347326451715687191L;
 
-    private String status;
+    private String message;
     private List<String> details;
     private LocalDateTime timestamp;
 }

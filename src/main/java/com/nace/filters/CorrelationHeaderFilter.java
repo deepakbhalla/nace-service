@@ -34,9 +34,9 @@ public class CorrelationHeaderFilter implements Filter {
 
         if (currentCorrId == null) {
             currentCorrId = UUID.randomUUID().toString().replaceAll("-", StringUtils.EMPTY);
-            LOG.info("New Correlation Id Generated: " + currentCorrId);
+            LOG.info("New Correlation Id Generated: ", currentCorrId);
         } else {
-            LOG.info("Found Existing Correlation Id: " + currentCorrId);
+            LOG.info("Found Existing Correlation Id: ", currentCorrId);
         }
 
         RequestCorrelation.setId(currentCorrId);

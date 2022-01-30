@@ -17,7 +17,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.nace.constants.NaceEnum;
-import com.nace.dto.ErrorResponse;
+import com.nace.dto.ErrorResponseDto;
 import com.nace.exceptions.EntityNotFoundException;
 
 /**
@@ -38,12 +38,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      * @return ResponseEntity of type ErrorResponse
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public final ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException ex,
+    public final ResponseEntity<ErrorResponseDto> handleConstraintViolation(ConstraintViolationException ex,
             WebRequest request) {
         List<String> details = ex.getConstraintViolations().parallelStream().map(e -> e.getMessage())
                 .collect(Collectors.toList());
 
-        ErrorResponse error = new ErrorResponse(NaceEnum.Errors.BAD_REQUEST.getValue(), details, LocalDateTime.now());
+        ErrorResponseDto error = new ErrorResponseDto(NaceEnum.Errors.BAD_REQUEST.getValue(), details, LocalDateTime.now());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
@@ -55,10 +55,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      * @return ResponseEntity of type ErrorResponse
      */
     @ExceptionHandler(EntityNotFoundException.class)
-    public final ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex,
+    public final ResponseEntity<ErrorResponseDto> handleEntityNotFoundException(EntityNotFoundException ex,
             WebRequest request) {
 
-        ErrorResponse error = new ErrorResponse(NaceEnum.Errors.NO_RECORD_FOUND.getValue(),
+        ErrorResponseDto error = new ErrorResponseDto(NaceEnum.Errors.NO_RECORD_FOUND.getValue(),
                 Arrays.asList(NaceEnum.Errors.NO_RECORD_FOUND_MSG.getValue()), LocalDateTime.now());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
@@ -71,9 +71,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      * @return ResponseEntity of type ErrorResponse
      */
     @ExceptionHandler(Exception.class)
-    public final ResponseEntity<ErrorResponse> handleExceptions(Exception ex, WebRequest request) {
+    public final ResponseEntity<ErrorResponseDto> handleExceptions(Exception ex, WebRequest request) {
 
-        ErrorResponse error = new ErrorResponse(NaceEnum.Errors.INTERNAL_SERVER_ERROR.getValue(),
+        ErrorResponseDto error = new ErrorResponseDto(NaceEnum.Errors.INTERNAL_SERVER_ERROR.getValue(),
                 Arrays.asList(NaceEnum.Errors.INTERNAL_SERVER_ERROR_MSG.getValue()), LocalDateTime.now());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -86,10 +86,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      * @return ResponseEntity of type ErrorResponse
      */
     @ExceptionHandler(NumberFormatException.class)
-    public final ResponseEntity<ErrorResponse> handleNumberFormatException(NumberFormatException ex,
+    public final ResponseEntity<ErrorResponseDto> handleNumberFormatException(NumberFormatException ex,
             WebRequest request) {
 
-        ErrorResponse error = new ErrorResponse(NaceEnum.Errors.INTERNAL_SERVER_ERROR.getValue(),
+        ErrorResponseDto error = new ErrorResponseDto(NaceEnum.Errors.INTERNAL_SERVER_ERROR.getValue(),
                 Arrays.asList(NaceEnum.Errors.INTERNAL_SERVER_ERROR_MSG.getValue()), LocalDateTime.now());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -102,9 +102,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      * @return ResponseEntity of type ErrorResponse
      */
     @ExceptionHandler(IOException.class)
-    public final ResponseEntity<ErrorResponse> handleIOException(IOException ex, WebRequest request) {
+    public final ResponseEntity<ErrorResponseDto> handleIOException(IOException ex, WebRequest request) {
 
-        ErrorResponse error = new ErrorResponse(NaceEnum.Errors.INTERNAL_SERVER_ERROR.getValue(),
+        ErrorResponseDto error = new ErrorResponseDto(NaceEnum.Errors.INTERNAL_SERVER_ERROR.getValue(),
                 Arrays.asList(NaceEnum.Errors.INTERNAL_SERVER_ERROR_MSG.getValue()), LocalDateTime.now());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -35,8 +35,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.nace.builder.ApiResponseBuilder;
 import com.nace.constants.NaceEnum;
 import com.nace.controllers.NaceDetailsController;
-import com.nace.dto.AddNaceDetails;
-import com.nace.dto.GetNaceDetails;
+import com.nace.dto.AddedNaceDetailsDto;
+import com.nace.dto.GetNaceDetailsDto;
 import com.nace.entities.NaceDetailsEntity;
 import com.nace.exceptions.EntityNotFoundException;
 import com.nace.filters.RequestCorrelation;
@@ -142,7 +142,7 @@ public class NaceDetailsControllerTest {
         List<NaceDetailsEntity> addedNaceRecords = constructNaceDetailsEntityList();
         when(this.mockNaceService.putNaceDetails(Mockito.anyString())).thenReturn(addedNaceRecords);
 
-        ResponseEntity<AddNaceDetails> postSuccessResponse = constructPostSuccessResponse(addedNaceRecords);
+        ResponseEntity<AddedNaceDetailsDto> postSuccessResponse = constructPostSuccessResponse(addedNaceRecords);
         when(apiResponseBuilder.buildPostResponse(addedNaceRecords)).thenReturn(postSuccessResponse);
     }
 
@@ -163,13 +163,12 @@ public class NaceDetailsControllerTest {
         List<NaceDetailsEntity> fetchedEntities = constructFetchedNaceDetailsEntityList();
         when(this.mockNaceService.getNaceDetailsByOrder(Mockito.anyLong())).thenReturn(fetchedEntities);
 
-        ResponseEntity<List<GetNaceDetails>> fetchedResponseDto = constructGetSuccessResponse(fetchedEntities);
+        ResponseEntity<List<GetNaceDetailsDto>> fetchedResponseDto = constructGetSuccessResponse(fetchedEntities);
         when(this.apiResponseBuilder.buildGetResponse(fetchedEntities)).thenReturn(fetchedResponseDto);
     }
 
     private void whenTheApiOperationGetsInvoked() throws Exception {
 
-        // fetchedNaceDetails = naceDetailsController.getNaceDetail("398857");
         mvcResult = this.mockMvc.perform(get(NACE_GET_API_ENDPOINT, "398857")).andReturn();
     }
 
@@ -189,18 +188,18 @@ public class NaceDetailsControllerTest {
         return addedNaceRecords;
     }
 
-    private ResponseEntity<List<GetNaceDetails>> constructGetSuccessResponse(List<NaceDetailsEntity> resultArg) {
+    private ResponseEntity<List<GetNaceDetailsDto>> constructGetSuccessResponse(List<NaceDetailsEntity> resultArg) {
 
-        List<GetNaceDetails> fetchedNaceRecords = new ArrayList<>();
+        List<GetNaceDetailsDto> fetchedNaceRecords = new ArrayList<>();
         resultArg.stream().forEach(result -> {
-            fetchedNaceRecords.add(GetNaceDetails.builder().order(result.getOrder()).level(result.getLevel())
+            fetchedNaceRecords.add(GetNaceDetailsDto.builder().order(result.getOrder()).level(result.getLevel())
                     .code(result.getCode()).parent(result.getParent()).description(result.getDescription())
                     .itemIncludes(result.getItemIncludes()).itemAlsoIncludes(result.getItemAlsoIncludes())
                     .rulings(result.getRulings()).itemExcludes(result.getItemExcludes())
                     .referencesIsic(result.getReferencesIsic()).build());
         });
 
-        return new ResponseEntity<List<GetNaceDetails>>(fetchedNaceRecords, HttpStatus.OK);
+        return new ResponseEntity<List<GetNaceDetailsDto>>(fetchedNaceRecords, HttpStatus.OK);
     }
 
     private List<NaceDetailsEntity> constructFetchedNaceDetailsEntityList() {
@@ -211,13 +210,13 @@ public class NaceDetailsControllerTest {
         return fetchedNaceRecords;
     }
 
-    private ResponseEntity<AddNaceDetails> constructPostSuccessResponse(List<NaceDetailsEntity> result) {
-        AddNaceDetails returnDto = AddNaceDetails.builder().status(NaceEnum.STATUS_SUCCESS.getValue())
+    private ResponseEntity<AddedNaceDetailsDto> constructPostSuccessResponse(List<NaceDetailsEntity> result) {
+        AddedNaceDetailsDto returnDto = AddedNaceDetailsDto.builder().status(NaceEnum.STATUS_SUCCESS.getValue())
                 .details(Arrays.asList(NaceEnum.ADD_RECORDS_SUCCESS_MSG.getValue()
                         .concat(StringUtils.defaultString(String.valueOf(result.size()), NaceEnum.ZERO.getValue())
                                 .concat(NaceEnum.RECORDS_MSG_TXT.getValue()))))
                 .timestamp(LocalDateTime.now()).build();
 
-        return new ResponseEntity<AddNaceDetails>(returnDto, HttpStatus.OK);
+        return new ResponseEntity<AddedNaceDetailsDto>(returnDto, HttpStatus.OK);
     }
 }
