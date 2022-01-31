@@ -38,10 +38,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      * @return ResponseEntity of type ErrorResponse
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public final ResponseEntity<ErrorResponseDto> handleConstraintViolation(ConstraintViolationException ex,
-            WebRequest request) {
-        List<String> details = ex.getConstraintViolations().parallelStream().map(e -> e.getMessage())
-                .collect(Collectors.toList());
+    public final ResponseEntity<ErrorResponseDto> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
+        List<String> details = ex.getConstraintViolations().parallelStream().map(e -> e.getMessage()).collect(Collectors.toList());
 
         ErrorResponseDto error = new ErrorResponseDto(NaceEnum.Errors.BAD_REQUEST.getValue(), details, LocalDateTime.now());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -55,8 +53,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      * @return ResponseEntity of type ErrorResponse
      */
     @ExceptionHandler(EntityNotFoundException.class)
-    public final ResponseEntity<ErrorResponseDto> handleEntityNotFoundException(EntityNotFoundException ex,
-            WebRequest request) {
+    public final ResponseEntity<ErrorResponseDto> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
 
         ErrorResponseDto error = new ErrorResponseDto(NaceEnum.Errors.NO_RECORD_FOUND.getValue(),
                 Arrays.asList(NaceEnum.Errors.NO_RECORD_FOUND_MSG.getValue()), LocalDateTime.now());
@@ -86,8 +83,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      * @return ResponseEntity of type ErrorResponse
      */
     @ExceptionHandler(NumberFormatException.class)
-    public final ResponseEntity<ErrorResponseDto> handleNumberFormatException(NumberFormatException ex,
-            WebRequest request) {
+    public final ResponseEntity<ErrorResponseDto> handleNumberFormatException(NumberFormatException ex, WebRequest request) {
 
         ErrorResponseDto error = new ErrorResponseDto(NaceEnum.Errors.INTERNAL_SERVER_ERROR.getValue(),
                 Arrays.asList(NaceEnum.Errors.INTERNAL_SERVER_ERROR_MSG.getValue()), LocalDateTime.now());
@@ -103,6 +99,21 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(IOException.class)
     public final ResponseEntity<ErrorResponseDto> handleIOException(IOException ex, WebRequest request) {
+
+        ErrorResponseDto error = new ErrorResponseDto(NaceEnum.Errors.INTERNAL_SERVER_ERROR.getValue(),
+                Arrays.asList(NaceEnum.Errors.INTERNAL_SERVER_ERROR_MSG.getValue()), LocalDateTime.now());
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * Handles exception of type IllegalStateException.
+     * 
+     * @param ex      - IllegalStateException.class
+     * @param request - WebRequest
+     * @return ResponseEntity of type ErrorResponse
+     */
+    @ExceptionHandler(IllegalStateException.class)
+    public final ResponseEntity<ErrorResponseDto> handleIllegalStateException(IllegalStateException ex, WebRequest request) {
 
         ErrorResponseDto error = new ErrorResponseDto(NaceEnum.Errors.INTERNAL_SERVER_ERROR.getValue(),
                 Arrays.asList(NaceEnum.Errors.INTERNAL_SERVER_ERROR_MSG.getValue()), LocalDateTime.now());

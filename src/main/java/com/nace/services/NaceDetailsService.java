@@ -1,7 +1,17 @@
 package com.nace.services;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.validation.ConstraintViolationException;
 
@@ -16,6 +26,7 @@ import com.nace.constants.NaceDetailsConstants;
 import com.nace.entities.NaceDetailsEntity;
 import com.nace.filters.RequestCorrelation;
 import com.nace.repositories.NaceDetailsRepository;
+import com.nace.services.executors.AddNaceDetailsExecutor;
 import com.nace.utils.CsvFileReader;
 
 /**
@@ -35,6 +46,9 @@ public class NaceDetailsService {
     @Autowired
     CsvFileReader csvFileReader;
 
+    @Autowired
+    AddNaceDetailsExecutor addNaceDetailsExecutor;
+
     /**
      * Imports Nace Details CSV file into Database table.
      * 
@@ -43,9 +57,12 @@ public class NaceDetailsService {
      * @throws NumberFormatException
      * @throws IOException
      * @throws ConstraintViolationException
+     * @throws InterruptedException
      */
     public List<NaceDetailsEntity> putNaceDetails(String filePath)
-            throws NumberFormatException, IOException, ConstraintViolationException {
+            throws NumberFormatException, IOException, ConstraintViolationException, InterruptedException {
+
+        List<NaceDetailsEntity> result = new ArrayList<>();
 
         String corrId = RequestCorrelation.getId();
         LOG.info("[{}] NaceDetailsService | Import CSV | Start", corrId);
@@ -57,7 +74,8 @@ public class NaceDetailsService {
         List<NaceDetailsEntity> naceDetails = csvFileReader.readCSVFile(filePath);
 
         /** Persist Java Object to database **/
-        List<NaceDetailsEntity> result = naceDetailsRepository.saveAll(naceDetails);
+        result = addNaceDetailsExecutor.execute(naceDetails, naceDetailsRepository);
+
         LOG.info("[{}] NaceDetailsService | Import CSV | Start", corrId);
         return result;
     }

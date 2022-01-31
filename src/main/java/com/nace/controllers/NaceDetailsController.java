@@ -64,6 +64,7 @@ public class NaceDetailsController {
      * @throws NumberFormatException
      * @throws IOException
      * @throws ConstraintViolationException
+     * @throws InterruptedException 
      */
     @ApiOperation(value = "Import Nace details from a CSV file to a database table.")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Successful import of CSV file into database."),
@@ -78,7 +79,7 @@ public class NaceDetailsController {
                 @NotBlank(message = "Value of request header named 'file-path' cannot be blank.") 
                 @Pattern(regexp = ".+(\\.csv)$", message = "File types other than CSV are not allowed.") 
             final String filePath)
-            throws NumberFormatException, IOException, ConstraintViolationException {
+            throws NumberFormatException, IOException, ConstraintViolationException, InterruptedException {
 
         String corrId = RequestCorrelation.getId();
         LOG.info("[{}] NaceDetailsController | Import CSV | Start", corrId);

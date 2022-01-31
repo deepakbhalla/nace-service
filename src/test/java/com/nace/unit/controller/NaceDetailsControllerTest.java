@@ -137,7 +137,7 @@ public class NaceDetailsControllerTest {
     }
 
     private void givenUserHasProvidedValidInputCsvFilePath()
-            throws NumberFormatException, ConstraintViolationException, IOException {
+            throws NumberFormatException, ConstraintViolationException, IOException, InterruptedException {
 
         List<NaceDetailsEntity> addedNaceRecords = constructNaceDetailsEntityList();
         when(this.mockNaceService.putNaceDetails(Mockito.anyString())).thenReturn(addedNaceRecords);

@@ -25,6 +25,7 @@ import com.nace.entities.NaceDetailsEntity;
 import com.nace.filters.RequestCorrelation;
 import com.nace.repositories.NaceDetailsRepository;
 import com.nace.services.NaceDetailsService;
+import com.nace.services.executors.AddNaceDetailsExecutor;
 import com.nace.utils.CsvFileReader;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -39,6 +40,9 @@ public class NaceDetailsServiceTest {
     @Autowired
     CsvFileReader csvFileReader;
 
+    @Autowired
+    AddNaceDetailsExecutor addNaceDetailsExecutor;
+
     private List<NaceDetailsEntity> persistedNaceDetails;
 
     @BeforeAll
@@ -48,13 +52,15 @@ public class NaceDetailsServiceTest {
         naceDetailsService = new NaceDetailsService();
         naceDetailsRepository = mock(NaceDetailsRepository.class);
         csvFileReader = mock(CsvFileReader.class);
+        addNaceDetailsExecutor = mock(AddNaceDetailsExecutor.class);
         ReflectionTestUtils.setField(naceDetailsService, "csvFileReader", csvFileReader);
         ReflectionTestUtils.setField(naceDetailsService, "naceDetailsRepository", naceDetailsRepository);
+        ReflectionTestUtils.setField(naceDetailsService, "addNaceDetailsExecutor", addNaceDetailsExecutor);
     }
 
     @Test
     public void testPutNaceDetailsShouldbeSuccessful()
-            throws NumberFormatException, ConstraintViolationException, IOException {
+            throws NumberFormatException, ConstraintViolationException, IOException, InterruptedException {
 
         givenControllerHasProvidedValidInputCsvFilePath();
         whenThePostOperationGetsInvoked();
@@ -68,15 +74,15 @@ public class NaceDetailsServiceTest {
         assertThrows(ConstraintViolationException.class, () -> naceDetailsService.putNaceDetails(null));
     }
 
-    private void givenControllerHasProvidedValidInputCsvFilePath() {
+    private void givenControllerHasProvidedValidInputCsvFilePath() throws InterruptedException {
 
         List<NaceDetailsEntity> addedNaceRecords = constructNaceDetailsEntityList();
         when(csvFileReader.readCSVFile(Mockito.anyString())).thenReturn(addedNaceRecords);
-        when(naceDetailsRepository.saveAll(addedNaceRecords)).thenReturn(addedNaceRecords);
+        when(addNaceDetailsExecutor.execute(addedNaceRecords, naceDetailsRepository)).thenReturn(addedNaceRecords);
     }
 
     private void whenThePostOperationGetsInvoked()
-            throws NumberFormatException, ConstraintViolationException, IOException {
+            throws NumberFormatException, ConstraintViolationException, IOException, InterruptedException {
 
         persistedNaceDetails = naceDetailsService.putNaceDetails("filePath.csv");
     }

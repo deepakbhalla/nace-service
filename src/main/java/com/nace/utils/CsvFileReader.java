@@ -60,12 +60,18 @@ public class CsvFileReader {
 
     private NaceDetailsEntity buildNaceExcelDetails(String[] record) {
 
-        NaceDetailsEntity nace = NaceDetailsEntity.builder().order(Long.valueOf(getDefaultValue(record[0])))
-                .level(Long.valueOf(getDefaultValue(record[1]))).code(getDefaultValue(record[2]))
-                .parent(getDefaultValue(record[3])).description(getDefaultValue(record[4]))
-                .itemIncludes(getDefaultValue(record[5])).itemAlsoIncludes(getDefaultValue(record[6]))
-                .rulings(getDefaultValue(record[7])).itemExcludes(getDefaultValue(record[8]))
-                .referencesIsic(getDefaultValue(record[9])).build();
+        NaceDetailsEntity nace = NaceDetailsEntity.builder()
+                .order(Long.valueOf(getDefaultValue(record[0])))
+                .level(Long.valueOf(getDefaultValue(record[1])))
+                .code(getDefaultValue(record[2]))
+                .parent(getDefaultValue(record[3]))
+                .description(getDefaultValue(record[4]))
+                .itemIncludes(getDefaultValue(record[5]))
+                .itemAlsoIncludes(getDefaultValue(record[6]))
+                .rulings(getDefaultValue(record[7]))
+                .itemExcludes(getDefaultValue(record[8]))
+                .referencesIsic(getDefaultValue(record[9]))
+                .build();
         return nace;
     }
 
